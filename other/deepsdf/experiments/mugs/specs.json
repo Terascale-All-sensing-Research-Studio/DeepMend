@@ -1,0 +1,46 @@
+{
+    "Description" : "vanilla deepsdf" ,
+    "DataSource" : "$DATADIR/ShapeNetCore.v2",
+    "TrainSplit" : "$DATADIR/ShapeNetCore.v2/mugs_train.pkl",
+    "TestSplit" : "$DATADIR/ShapeNetCore.v2/mugs_test.pkl",
+    "NetworkArch" : "decoder_deepsdf",
+    "NetworkSpecs" : {
+        "dims" : [ 512, 512, 512, 512, 512, 512, 512, 512 ],
+        "dropout" : [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+        "dropout_prob" : 0.2,
+        "norm_layers" : [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+        "latent_in" : [ 4 ],
+        "xyz_in_all" : false,
+        "use_tanh" : false,
+        "latent_dropout" : false,
+        "weight_norm" : true
+    },
+    "CodeLength" : 128,
+    "NumEpochs" : 2001,
+    "SnapshotFrequency" : 100,
+    "AdditionalSnapshots" : [ ],
+    "LearningRateSchedule" : [
+    {
+        "Type" : "Step",
+        "Initial" : 0.0005,
+        "Interval" : 500,
+        "Factor" : 0.5
+    },
+    {
+        "Type" : "Step",
+        "Initial" : 0.001,
+        "Interval" : 500,
+        "Factor" : 0.5
+    }],
+    "UseOccupancy" : false,
+    "SamplesPerScene" : 16384,
+    "ScenesPerBatch" : 38,
+    "DataLoaderThreads" : 10,
+    "CodeBound" : 1.0,
+    "ClampingDistance" : 0.1,
+    "CodeRegularization" : true,
+    "CodeRegularizationLambda" : 1e-4,
+    "CodeRegularizationWarmup" : 100,
+    "UniformRatio": 0.2
+}
+
