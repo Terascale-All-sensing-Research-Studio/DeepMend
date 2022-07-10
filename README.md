@@ -2,7 +2,7 @@
 Code for "DeepMend: Learning Occupancy Functions to Represent Shape for Repair." \
 Published at ECCV 2022.
 
-<img src="assets/chair.gif" alt="example1" width="200"/> <img src="assets/mug.gif" alt="example1" width="200"/> <img src="assets/car.gif" alt="example1" width="200"/>
+<img src="assets/chair.gif" alt="example1" width="200"/> <img src="assets/car.gif" alt="example1" width="200"/> <img src="assets/mug.gif" alt="example1" width="200"/> 
 
 ```
 citation
