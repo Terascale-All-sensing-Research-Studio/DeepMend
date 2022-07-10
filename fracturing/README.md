@@ -33,7 +33,7 @@ This readme will demo the data processing pipeline for the mugs dataset from sha
 $DATADIR/ShapeNetCore.v2
 ```
 
-To perform data processing use the `scripts/fracture.sh` script. The script takes 4 arguments:
+To perform a single step of data processing use the `scripts/fracture.sh` script. The script takes 4 arguments:
 - Path to the directory containing shapenet data
 - Path to a .json train/test split file (will be created if does not exist)
 - Operation (int from 1 to 8, corresponding to the above list)
@@ -56,10 +56,10 @@ cd deepmend
 Run the build script with 4 arguments:
 - Path to the directory containing shapenet data
 - Path to a .json train/test split file
-- Path to a train/test database file (will be created)
+- Path to a train/test database file (will be created and have _train.pkl or _test.pkl appended)
 - Number of breaks
 
-The following will create the pkl files for the mugs class.
+The following: 
 ```
 ./scripts/build.sh \
     $DATADIR/ShapeNetCore.v2/03797390 \
@@ -67,5 +67,14 @@ The following will create the pkl files for the mugs class.
     $DATADIR/ShapeNetCore.v2/mugs \
     1
 ```
+will create the files `$DATADIR/ShapeNetCore.v2/mugs_train.pkl` and `$DATADIR/ShapeNetCore.v2/mugs_test.pkl`.
 
-This will create two pkl files containing the training and testing data.
+This will create two pkl files containing the training and testing data. Now you can train according to the training procedure specified in the parent directory. When creating the `specs.json` file, set the `TrainSplit` and `TestSplit` as the files that were created by the build script:
+```
+{
+    "Description" : "deepmend, mugs dataset",
+    "DataSource" : "$DATADIR/ShapeNetCore.v2",
+    "TrainSplit" : "$DATADIR/ShapeNetCore.v2/mugs_train.pkl",
+    "TestSplit" : "$DATADIR/ShapeNetCore.v2/mugs_test.pkl",
+...
+```

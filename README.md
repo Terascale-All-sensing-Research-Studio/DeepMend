@@ -76,4 +76,3 @@ To infer:
 ```
 
 Data is saved in the experiment directory passed to the reconstruction script, under a `Reconstructions` subdirectory. For example, results for the mugs example will be stored in `deepmend/experiments/mugs/Reconstructions/ours/`. Meshes are stored in the `Meshes` subdirectory. A render of all the results is stored in the top-level reconstruction directory. 
-# DeepMend
