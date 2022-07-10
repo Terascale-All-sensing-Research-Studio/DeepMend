@@ -1,0 +1,85 @@
+import trimesh
+import numpy as np
+
+from scipy.spatial import cKDTree as KDTree
+
+import core
+
+
+def chamfer(gt_shape, pred_shape, num_mesh_samples=2000):
+    """
+    Compute the chamfer distance for two 3D meshes.
+    This function computes a symmetric chamfer distance, i.e. the mean chamfers.
+    Based on the code provided by DeepSDF.
+
+    Args:
+        gt_shape (trimesh object or points): Ground truth shape.
+        pred_shape (trimesh object): Predicted shape.
+        num_mesh_samples (points): Number of points to sample from the predicted
+            shape. Must be the same number of points as were computed for the
+            ground truth shape.
+    """
+
+    if pred_shape.vertices.shape[0] == 0:
+        raise core.errors.MeshEmptyError
+    assert gt_shape.vertices.shape[0] != 0, "gt shape has no vertices"
+
+    try:
+        gt_pts = trimesh.sample.sample_surface(gt_shape, num_mesh_samples)[0]
+    except AttributeError:
+        gt_pts = gt_shape
+        assert (
+            gt_pts.shape[0] == num_mesh_samples
+        ), "Wrong number of gt points, expected {} got {}".format(
+            num_mesh_samples, gt_pts.shape[0]
+        )
+    pred_pts = trimesh.sample.sample_surface(pred_shape, num_mesh_samples)[0]
+
+    # one direction
+    one_distances, _ = KDTree(pred_pts).query(gt_pts)
+    gt_to_pred_chamfer = np.mean(np.square(one_distances))
+
+    # other direction
+    two_distances, _ = KDTree(gt_pts).query(pred_pts)
+    pred_to_gt_chamfer = np.mean(np.square(two_distances))
+
+    return gt_to_pred_chamfer + pred_to_gt_chamfer
+
+
+def connected_artifacts_score2(
+    gt_complete, gt_broken, gt_restoration, pd_restoration, max_dist=0.02, num_mesh_samples=30000
+):
+
+    if pd_restoration.vertices.shape[0] == 0:
+        raise core.errors.MeshEmptyError
+    assert gt_complete.vertices.shape[0] != 0, "gt shape has no vertices"
+    assert gt_broken.vertices.shape[0] != 0, "gt shape has no vertices"
+    assert gt_restoration.vertices.shape[0] != 0, "gt shape has no vertices"
+
+    # Get the fracture and exterior vertices
+    exterior_verts = np.ones(gt_broken.vertices.shape[0]).astype(bool)
+    exterior_verts[core.get_fracture_points(gt_broken, gt_restoration)] = False
+
+    # Get the associated faces
+    # fracture_faces = fracture_verts[gt_broken.faces].all(axis=1)
+    exterior_faces = exterior_verts[gt_broken.faces].all(axis=1)
+
+    # Sample the broken
+    gt_broken_points, face_inds = trimesh.sample.sample_surface(gt_broken, num_mesh_samples)
+    _, exterior_inds, _ = np.intersect1d(
+        face_inds, np.where(exterior_faces)[0], return_indices=True
+    )
+    exterior_points = gt_broken_points[exterior_inds, :]
+
+    # Sample the restorations
+    gt_restoration_points = trimesh.sample.sample_surface(gt_restoration, num_mesh_samples)[0]
+    pd_restoration_points = trimesh.sample.sample_surface(pd_restoration, num_mesh_samples)[0]
+
+    # Throw out exterior points that have a close point in the gt restoration
+    d = KDTree(gt_restoration_points).query(exterior_points)[0]
+    exterior_points = exterior_points[d > max_dist, :]
+
+    # What percentage of exterior points DO have close neighbors when they SHOULDNT?
+    return (
+        KDTree(pd_restoration_points).query(exterior_points)[0] < max_dist
+    ).sum() / exterior_points.shape[0]

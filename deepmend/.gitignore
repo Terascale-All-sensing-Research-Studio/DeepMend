@@ -1,0 +1,23 @@
+# 3dorgan files
+other/3do/env
+other/3do/libs
+
+# Virtual environmnet
+env
+
+# 3rd party libraries
+libs
+
+# Python files
+*.pyc
+*__pycache__
+
+# Machine-specific constants
+constants.sh
+
+# All temp files
+*temp*
+
+# Experiments directory
+deepmend/experiments*
+

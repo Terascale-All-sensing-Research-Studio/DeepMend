@@ -1,0 +1,71 @@
+# data-prep
+
+Make sure you've created and activated the python virtual environment. Then install pymesh.
+```
+./install_pymesh.sh
+```
+
+To generate fractured shapes from scratch, download shapenet from https://shapenet.org/. Extract the data into a directory, e.g. "/path/to/above/ShapeNet".
+
+Almost all scripts require that the following environment variable be set to the directory above ShapeNet.
+```
+export DATADIR="/path/to/above/ShapeNet"
+```
+
+## Data preparation
+Fracturing is done in several steps:
+
+1) Waterproof meshes.
+2) Normalize meshes. 
+3) Fracture meshes. 
+4) Compute sample points.
+5) Compute SDF values. 
+6) Compute spline breaks. 
+7) Compute voxels. (for baselines)
+8) Compute OCC values. (for baselines)
+
+The `scripts/fracture.sh` takes an integer corresponding to one of the above processes.
+
+NOTE: waterproofing cannot be done on a PC that does not have a display.
+
+This readme will demo the data processing pipeline for the mugs dataset from shapenet. We assume you've downloaded shapenet to:
+```
+$DATADIR/ShapeNetCore.v2
+```
+
+To perform data processing use the `scripts/fracture.sh` script. The script takes 4 arguments:
+- Path to the directory containing shapenet data
+- Path to a .json train/test split file (will be created if does not exist)
+- Operation (int from 1 to 8, corresponding to the above list)
+- Number of breaks
+
+We provide a wrapper, `scripts/run.sh`, to execute all preprocessing steps in order. The following will perform all preprocessing steps in order, fracturing each object 1 time.
+```
+./scripts/run.sh \
+    $DATADIR/ShapeNetCore.v2/03797390 \
+    $DATADIR/ShapeNetCore.v2/mugs_split.json \
+    1
+```
+
+The next step is to package the data into pkl files for training and testing. Navigate into the `deepmend` directory.
+```
+cd ..
+cd deepmend
+```
+
+Run the build script with 4 arguments:
+- Path to the directory containing shapenet data
+- Path to a .json train/test split file
+- Path to a train/test database file (will be created)
+- Number of breaks
+
+The following will create the pkl files for the mugs class.
+```
+./scripts/build.sh \
+    $DATADIR/ShapeNetCore.v2/03797390 \
+    $DATADIR/ShapeNetCore.v2/mugs_split.json \
+    $DATADIR/ShapeNetCore.v2/mugs \
+    1
+```
+
+This will create two pkl files containing the training and testing data.

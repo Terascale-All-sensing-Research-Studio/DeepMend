@@ -1,0 +1,5 @@
+{
+    "TestSplitRoot" : "$DATADIR/ShapeNetCore.v2",
+    "TestSplit" : "$DATADIR/mugs.npy",
+    "DataSource" : "$DATADIR/mugs_test.pkl"
+}
