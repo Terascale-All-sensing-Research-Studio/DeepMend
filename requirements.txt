@@ -66,7 +66,7 @@ numeral==0.1.0.17
 numex==0.0.0.7
 numpy==1.23.0
 oauthlib==3.1.1
-open3d==0.15.2
+open3d==0.13.0
 opencv-python==4.5.3.56
 packaging==21.0
 pandas==1.1.5
