@@ -11,9 +11,13 @@ citation
 ## Installation
 
 Code tested using Ubutnu 18.04 and python 3.8.0.
+Note that you need to have the following apt dependencies installed. 
+```bash
+sudo apt install python3.8-distutils python3.8-dev libgl1
+```
 
 We recommend using virtualenv. The following snippet will create a new virtual environment, activate it, and install deps.
-```
+```bash
 sudo apt-get install virtualenv && \
 virtualenv -p python3.8 env && \
 source setup.sh && \
