@@ -304,7 +304,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_args()
     core.configure_logging(args)
 
-    assert os.environ["DATADIR"], "environment variable $DATADIR must be defined"
+    # assert os.environ["DATADIR"], "environment variable $DATADIR must be defined"
 
     specs_filename = core.find_specs(args.experiment_directory)
     specs = json.load(open(specs_filename))
