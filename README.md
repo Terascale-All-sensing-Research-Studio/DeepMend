@@ -20,9 +20,10 @@ We recommend using virtualenv. The following snippet will create a new virtual e
 ```bash
 sudo apt-get install virtualenv && \
 virtualenv -p python3.8 env && \
-source setup.sh && \
+source env/bin/activate && \
 pip install -r requirements.txt && \
-./install.sh
+./install.sh && \
+source setup.sh
 ```
 Issues with compiling pyrender are typically solved by upgrading cython: `pip install --upgrade cython`.
 

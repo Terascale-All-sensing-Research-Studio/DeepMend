@@ -9,10 +9,13 @@ import time
 
 import socket
 import tqdm
-import neptune
 import numpy as np
 from sklearn.metrics import accuracy_score
 import core
+try:
+    import neptune
+except ImportError:
+    pass
 
 import matplotlib
 matplotlib.use('Agg')
@@ -494,6 +497,9 @@ def main_function(experiment_directory, continue_from, batch_split):
     neptune_name = specs.setdefault("NeptuneName", None)
     test_every = specs.setdefault("TestEvery", None)
     stop_netptune_after = get_spec_with_default(specs, "StopNeptuneAfter", 200)
+    if "neptune" not in locals() and neptune_name is not None:
+        neptune_name = None
+        logging.warning("Could not import neptune, disabling")
     if neptune_name is not None:
         logging.info("Logging to neptune project: {}".format(neptune_name))
         neptune.init(
