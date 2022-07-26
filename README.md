@@ -8,6 +8,9 @@ Published at ECCV 2022.
 citation placeholder
 ```
 
+We are now accepting broken object donations via the form below! \
+[Broken Object Donations](https://forms.gle/B8V5UiVSirEM8N5m8)
+
 ## Installation
 
 Code tested using Ubutnu 18.04 and python 3.8.0.
