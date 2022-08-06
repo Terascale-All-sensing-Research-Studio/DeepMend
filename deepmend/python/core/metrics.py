@@ -83,3 +83,46 @@ def connected_artifacts_score2(
     return (
         KDTree(pd_restoration_points).query(exterior_points)[0] < max_dist
     ).sum() / exterior_points.shape[0]
+
+
+def normal_consistency(gt_shape, pred_shape, num_mesh_samples=30000):
+    """
+    Compute the normal alignment for two 3d meshes.
+    Based on the code provided by Occupancy Networks.
+    Args:
+        gt_shape (trimesh object): Ground truth shape.
+        pred_shape (trimesh object): Predicted shape.
+    """
+    if pred_shape.vertices.shape[0] == 0:
+        raise core.errors.MeshEmptyError
+    assert gt_shape.vertices.shape[0] != 0, "gt shape has no vertices"
+
+    def normal_diff(obj_from, obj_to):
+        obj_to.face_normals
+        obj_from.face_normals
+
+        verts_from, face_indices_from = obj_from.sample(count=num_mesh_samples, return_index=True)
+        verts_to, face_indices_to = obj_to.sample(count=num_mesh_samples, return_index=True)
+
+        _, idx = KDTree(verts_to).query(verts_from)
+
+        normals_from = obj_from.face_normals[face_indices_from, :]
+        normals_to = obj_to.face_normals[face_indices_to[idx], :]
+        
+        # Normalize the normals, sometimes trimesh doesn't do this
+        normals_from = normals_from / np.linalg.norm(
+            normals_from, axis=-1, keepdims=True
+        )
+        normals_to = normals_to / np.linalg.norm(
+            normals_to, axis=-1, keepdims=True
+        )
+
+        # Compute the dot product
+        return (normals_to * normals_from).sum(axis=-1)
+
+    return (
+        np.hstack((
+            normal_diff(gt_shape, pred_shape),
+            normal_diff(pred_shape, gt_shape)
+        )).mean()
+    )

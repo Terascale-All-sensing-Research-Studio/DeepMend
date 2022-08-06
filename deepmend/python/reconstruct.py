@@ -632,44 +632,64 @@ if __name__ == "__main__":
         )
 
     logging.info("Building summary render")
-    try:
-        img = core.vis.image_results(
-            data_handler=sdf_dataset,
-            reconstruct_list=reconstruct_list,
-            reconstruction_handler=reconstruction_handler,
-            outputs=total_outputs,
-            num_renders=3,
-            resolution=render_resolution,
-            composite=composite,
-            knit_handlers=[],
-        )
-    except ValueError:
-        img = core.vis.image_results(
-            data_handler=None,
-            reconstruct_list=reconstruct_list,
-            reconstruction_handler=reconstruction_handler,
-            outputs=total_outputs,
-            num_renders=3,
-            resolution=render_resolution,
-            composite=False,
-            knit_handlers=[],
-        )
-
     path = os.path.join(
         reconstruction_handler.path_reconstruction(), "summary_img_{}.jpg"
     )
-    logging.info(
-        "Saving summary render to: {}".format(
-            path.replace(os.environ["DATADIR"], "$DATADIR")
+    if not os.path.exists(path.format(0)):
+        try:
+            img = core.vis.image_results(
+                data_handler=sdf_dataset,
+                reconstruct_list=reconstruct_list,
+                reconstruction_handler=reconstruction_handler,
+                outputs=total_outputs,
+                num_renders=3,
+                resolution=render_resolution,
+                composite=composite,
+                knit_handlers=[],
+            )
+        except ValueError:
+            img = core.vis.image_results(
+                data_handler=None,
+                reconstruct_list=reconstruct_list,
+                reconstruction_handler=reconstruction_handler,
+                outputs=total_outputs,
+                num_renders=3,
+                resolution=render_resolution,
+                composite=False,
+                knit_handlers=[],
+            )
+
+        logging.info(
+            "Saving summary render to: {}".format(
+                path.replace(os.environ["DATADIR"], "$DATADIR")
+            )
         )
-    )
-    core.vis.save_image_block(img, path)
+        core.vis.save_image_block(img, path)
+
+    metrics = [
+        "chamfer",
+        "connected_artifacts_score2",
+        "normal_consistency",
+    ]
+    output_pairs = [(0, 0), (1, 1), (2, 2)]
+    
+    for metric in metrics:
+        logging.info("Computing {} ...".format(metric))
+        core.handler.eval_engine(
+            reconstruct_list=reconstruct_list,
+            output_pairs=output_pairs,
+            threads=render_threads,
+            overwrite=overwrite_evals,
+            reconstruction_handler=reconstruction_handler,
+            data_handler=sdf_dataset,
+            metric=metric,
+        )
 
     out_metrics = reconstruction_handler.path_metrics("metrics.npy")
     core.export_report(
         out_metrics=out_metrics,
         reconstruction_handler=reconstruction_handler,
         reconstruct_list=reconstruct_list,
-        output_pairs=[(0, 0), (1, 1), (2, 2)],
-        metrics=["chamfer"],
+        output_pairs=output_pairs,
+        metrics=metrics,
     )

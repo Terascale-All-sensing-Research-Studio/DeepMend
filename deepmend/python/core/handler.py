@@ -431,52 +431,10 @@ def eval_engine(
 
     if metric == "chamfer":
         fn = core.metrics.chamfer
-    elif metric == "iou":
-        fn = core.metrics.iou
-    elif metric == "union_score":
-        fn = core.metrics.union_score
-    elif metric == "intersection_score":
-        fn = core.metrics.intersection_score
-    elif metric == "non_protrusion_score":
-        fn = core.metrics.non_protrusion_score
-    elif metric == "fractured_protrusion_score":
-        fn = core.metrics.fractured_protrusion_score
-    elif metric == "component_error":
-        fn = core.metrics.component_error
-    elif metric == "connected_artifacts_score":
-        fn = core.metrics.connected_artifacts_score
     elif metric == "connected_artifacts_score2":
         fn = core.metrics.connected_artifacts_score2
-    elif metric == "chamfer_complete":
-        fn = core.metrics.chamfer_complete
-    elif metric == "join_dissimilarity":
-        fn = core.metrics.join_dissimilarity
-    elif metric == "chamfer_join":
-        fn = core.metrics.chamfer_join
-    elif metric == "join_similarity":
-        fn = core.metrics.join_similarity
     elif metric == "normal_consistency":
         fn = core.metrics.normal_consistency
-    elif metric == "complete_sameness":
-        fn = core.metrics.complete_sameness
-    elif metric == "exterior_error":
-        fn = core.metrics.exterior_error
-    elif metric == "close_exterior_error":
-        fn = core.metrics.close_exterior_error
-    elif metric == "break_error":
-        fn = core.metrics.break_error
-    elif metric == "connected_artifacts_error":
-        fn = core.metrics.connected_artifacts_error
-    elif metric == "total_exterior_error":
-        fn = core.metrics.total_exterior_error
-    elif metric == "total_close_exterior_error":
-        fn = core.metrics.total_close_exterior_error
-    elif metric == "total_break_error":
-        fn = core.metrics.total_break_error
-    elif metric == "nested_binner":
-        fn = None
-    elif metric == "truth_tabler":
-        fn = None
     else:
         raise RuntimeError("Unknown metric: {}".format(metric))
 
