@@ -5,7 +5,14 @@ Published at ECCV 2022.
 <img src="assets/chair.gif" alt="example1" width="200"/> <img src="assets/car.gif" alt="example1" width="200"/> <img src="assets/mug.gif" alt="example1" width="200"/> 
 
 ```
-citation placeholder
+@inproceedings{lamb2022deepmend,
+  title={DeepMend: Learning Occupancy Functions to Represent Shape for Repair},
+  author={Lamb, Nikolas and Banerjee, Sean and Banerjee, Natasha Kholgade},
+  booktitle={European Conference on Computer Vision},
+  pages={433--450},
+  year={2022},
+  organization={Springer}
+}
 ```
 
 We are now accepting broken object donations via the form below! \
